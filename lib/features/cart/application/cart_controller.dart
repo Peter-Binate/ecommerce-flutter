@@ -5,10 +5,23 @@ class CartItem {
   final String title;
   final double price;
   final int quantity;
-  const CartItem({required this.productId, required this.title, required this.price, required this.quantity});
+  final String thumbnail;
 
-  CartItem copyWith({int? quantity}) =>
-      CartItem(productId: productId, title: title, price: price, quantity: quantity ?? this.quantity);
+  const CartItem({
+    required this.productId,
+    required this.title,
+    required this.price,
+    required this.quantity,
+    required this.thumbnail, 
+  });
+
+  CartItem copyWith({int? quantity}) => CartItem(
+        productId: productId,
+        title: title,
+        price: price,
+        quantity: quantity ?? this.quantity,
+        thumbnail: thumbnail, 
+      );
 }
 
 class CartState {
@@ -20,10 +33,18 @@ class CartState {
 class CartController extends StateNotifier<CartState> {
   CartController() : super(const CartState(<CartItem>[]));
 
-  void addItem({required String id, required String title, required double price}) {
+  void addItem({
+    required String id,
+    required String title,
+    required double price,
+    required String thumbnail,
+  }) {
     final idx = state.items.indexWhere((e) => e.productId == id);
     if (idx == -1) {
-      state = CartState([...state.items, CartItem(productId: id, title: title, price: price, quantity: 1)]);
+      state = CartState([
+        ...state.items,
+        CartItem(productId: id, title: title, price: price, quantity: 1, thumbnail: thumbnail)
+      ]);
     } else {
       final updated = [...state.items];
       updated[idx] = updated[idx].copyWith(quantity: updated[idx].quantity + 1);
@@ -47,5 +68,3 @@ class CartController extends StateNotifier<CartState> {
 }
 
 final cartControllerProvider = StateNotifierProvider<CartController, CartState>((ref) => CartController());
-
-
