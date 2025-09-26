@@ -13,13 +13,15 @@ void main() {
 
   setUp(() {
     mockAuthRepository = MockAuthRepository();
-    mockUser = MockUser(); 
+    mockUser = MockUser();
   });
 
   ProviderContainer createContainer({AuthRepository? authRepository}) {
     final container = ProviderContainer(
       overrides: [
-        authRepositoryProvider.overrideWithValue(authRepository ?? mockAuthRepository),
+        authRepositoryProvider.overrideWithValue(
+          authRepository ?? mockAuthRepository,
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -27,41 +29,57 @@ void main() {
   }
 
   group('AuthController Tests', () {
-    test('Test 1: signIn avec succès met à jour l\'état de l\'utilisateur', () async {
-      // ARRANGE
-      when(mockAuthRepository.signIn('test@test.com', 'password')).thenAnswer((_) async => {});
-      when(mockAuthRepository.authStateChanges()).thenAnswer((_) => Stream.value(mockUser));
-      when(mockAuthRepository.currentUser).thenReturn(null);
+    test(
+      'Test 1: signIn avec succès met à jour l\'état de l\'utilisateur',
+      () async {
+        // ARRANGE
+        when(
+          mockAuthRepository.signIn('test@test.com', 'password'),
+        ).thenAnswer((_) async => {});
+        when(
+          mockAuthRepository.authStateChanges(),
+        ).thenAnswer((_) => Stream.value(mockUser));
+        when(mockAuthRepository.currentUser).thenReturn(null);
 
-      final container = createContainer();
-      final controller = container.read(authControllerProvider.notifier);
+        final container = createContainer();
+        final controller = container.read(authControllerProvider.notifier);
 
-      // ACT
-      await controller.signIn('test@test.com', 'password');
+        // ACT
+        await controller.signIn('test@test.com', 'password');
 
-      // ASSERT
-      verify(mockAuthRepository.signIn('test@test.com', 'password')).called(1);
-      expect(controller.debugState.error, isNull);
-      expect(controller.debugState.isLoading, isFalse);
-    });
+        // ASSERT
+        verify(
+          mockAuthRepository.signIn('test@test.com', 'password'),
+        ).called(1);
+        expect(controller.debugState.error, isNull);
+        expect(controller.debugState.isLoading, isFalse);
+      },
+    );
 
-    test('Test 2: signIn avec une erreur met à jour l\'état avec un message d\'erreur', () async {
-      // ARRANGE
-      final exception = FirebaseAuthException(code: 'user-not-found', message: 'User not found');
-      when(mockAuthRepository.signIn(any, any)).thenThrow(exception);
-      when(mockAuthRepository.authStateChanges()).thenAnswer((_) => Stream.value(null));
-      when(mockAuthRepository.currentUser).thenReturn(null);
+    test(
+      'Test 2: signIn avec une erreur met à jour l\'état avec un message d\'erreur',
+      () async {
+        // ARRANGE
+        final exception = FirebaseAuthException(
+          code: 'user-not-found',
+          message: 'User not found',
+        );
+        when(mockAuthRepository.signIn(any, any)).thenThrow(exception);
+        when(
+          mockAuthRepository.authStateChanges(),
+        ).thenAnswer((_) => Stream.value(null));
+        when(mockAuthRepository.currentUser).thenReturn(null);
 
-      final container = createContainer();
-      final controller = container.read(authControllerProvider.notifier);
+        final container = createContainer();
+        final controller = container.read(authControllerProvider.notifier);
 
-      // ACT
-      await controller.signIn('test@test.com', 'wrong-password');
+        // ACT
+        await controller.signIn('test@test.com', 'wrong-password');
 
-      // ASSERT
-      expect(controller.debugState.error, 'User not found');
-      expect(controller.debugState.isLoading, isFalse);
-    });
-
+        // ASSERT
+        expect(controller.debugState.error, 'User not found');
+        expect(controller.debugState.isLoading, isFalse);
+      },
+    );
   });
 }
