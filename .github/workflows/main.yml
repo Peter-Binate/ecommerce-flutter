@@ -1,0 +1,83 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_and_test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install lcov
+        run: sudo apt-get -y install lcov
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: flutter format --set-exit-if-changed .
+
+      - name: Analyze code
+        run: flutter analyze .
+
+      - name: Run tests and generate coverage
+        run: flutter test --coverage
+
+      - name: Check code coverage
+        run: |
+          # Extrait le pourcentage de couverture de la sortie de lcov
+          COVERAGE=$(lcov --summary coverage/lcov.info | grep "lines......" | awk '{print $2}' | sed 's/%//')
+          echo "Code coverage is $COVERAGE%"
+          # Convertit en entier pour la comparaison
+          COVERAGE_INT=${COVERAGE%.*}
+          if [ $COVERAGE_INT -lt 50 ]; then
+            echo "Erreur : La couverture de code ($COVERAGE%) est inférieure au seuil requis de 50%."
+            exit 1
+          else
+            echo "La couverture de code est suffisante."
+          fi
+
+      - name: Build web application
+        run: flutter build web --release
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-web
+          path: build/web
+
+  deploy:
+    name: Deploy to Firebase Hosting
+    needs: build_and_test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-web
+          path: build/web
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
+          channelId: live
