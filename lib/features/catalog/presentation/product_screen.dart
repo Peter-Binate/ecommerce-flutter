@@ -27,7 +27,9 @@ class ProductScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.favorite_border, color: Colors.redAccent),
-            onPressed: () { /* Logique pour les favoris */ },
+            onPressed: () {
+              /* Logique pour les favoris */
+            },
           ),
         ],
       ),
@@ -42,7 +44,12 @@ class ProductScreen extends ConsumerWidget {
           // Données simulées pour l'UI
           final rating = (3.8 + Random().nextDouble() * 1.2).toStringAsFixed(1);
           final sizes = ['US 6', 'US 7', 'US 8', 'US 9'];
-          final colors = [Colors.orange.shade800, Colors.teal, Colors.green, Colors.yellow.shade700];
+          final colors = [
+            Colors.orange.shade800,
+            Colors.teal,
+            Colors.green,
+            Colors.yellow.shade700,
+          ];
 
           return Column(
             children: [
@@ -60,7 +67,7 @@ class ProductScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              
+
               // --- Partie Inférieure : Fiche de détails ---
               Expanded(
                 flex: 6,
@@ -68,10 +75,16 @@ class ProductScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(24.0),
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(30),
+                    ),
                     boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0,-2)),
-                    ]
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
                   ),
                   child: Stack(
                     children: [
@@ -86,42 +99,85 @@ class ProductScreen extends ConsumerWidget {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(product.title, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                                      Text(
+                                        product.title,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
                                       const SizedBox(height: 4),
-                                      Text('By ${product.category}', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey)),
+                                      Text(
+                                        'By ${product.category}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(color: Colors.grey),
+                                      ),
                                     ],
                                   ),
                                 ),
                                 Column(
-                                   crossAxisAlignment: CrossAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                     Text('${product.price.toStringAsFixed(2)}€', style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: Colors.deepPurple, fontWeight: FontWeight.bold)),
-                                     const SizedBox(height: 4),
-                                     Row(
-                                       children: [
-                                         const Icon(Icons.star, color: Colors.amber, size: 20),
-                                         const SizedBox(width: 4),
-                                         Text(rating, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                       ],
-                                     )
+                                    Text(
+                                      '${product.price.toStringAsFixed(2)}€',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                          ?.copyWith(
+                                            color: Colors.deepPurple,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          rating,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                             const SizedBox(height: 24),
                             // Sélecteur de taille
                             _SizeSelector(sizes: sizes),
                             const SizedBox(height: 24),
-                             // Sélecteur de couleur
+                            // Sélecteur de couleur
                             _ColorSelector(colors: colors),
                             const SizedBox(height: 24),
                             // Description
-                            Text('Description', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                            Text(
+                              'Description',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
                             const SizedBox(height: 8),
-                            Text(product.description, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600)),
-                            const SizedBox(height: 80), // Espace pour le bouton flottant
+                            Text(
+                              product.description,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(color: Colors.grey.shade600),
+                            ),
+                            const SizedBox(
+                              height: 80,
+                            ), // Espace pour le bouton flottant
                           ],
                         ),
                       ),
@@ -131,22 +187,29 @@ class ProductScreen extends ConsumerWidget {
                         right: 16,
                         child: FloatingActionButton(
                           onPressed: () {
-                              ref.read(cartControllerProvider.notifier).addItem(
+                            ref
+                                .read(cartControllerProvider.notifier)
+                                .addItem(
                                   id: product.id,
                                   title: product.title,
                                   price: product.price,
-                                  thumbnail: product.thumbnail, 
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ajouté au panier')));
+                                  thumbnail: product.thumbnail,
+                                );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Ajouté au panier')),
+                            );
                           },
                           backgroundColor: Colors.deepPurple,
-                          child: const Icon(Icons.shopping_basket_outlined, color: Colors.white),
+                          child: const Icon(
+                            Icons.shopping_basket_outlined,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           );
         },
@@ -180,7 +243,12 @@ class _SizeSelectorState extends State<_SizeSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Size', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'Size',
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8.0,
@@ -196,8 +264,12 @@ class _SizeSelectorState extends State<_SizeSelector> {
               },
               backgroundColor: Colors.grey.shade200,
               selectedColor: Colors.deepPurple,
-              labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              labelStyle: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               side: BorderSide.none,
             );
           }).toList(),
@@ -222,7 +294,7 @@ class _ColorSelectorState extends State<_ColorSelector> {
   @override
   void initState() {
     super.initState();
-    if(widget.colors.isNotEmpty) {
+    if (widget.colors.isNotEmpty) {
       _selectedColor = widget.colors.first;
     }
   }
@@ -230,9 +302,14 @@ class _ColorSelectorState extends State<_ColorSelector> {
   @override
   Widget build(BuildContext context) {
     return Column(
-       crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Color', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          'Color',
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 12.0,
@@ -240,19 +317,20 @@ class _ColorSelectorState extends State<_ColorSelector> {
             final isSelected = _selectedColor == color;
             return GestureDetector(
               onTap: () {
-                setState(() { _selectedColor = color; });
+                setState(() {
+                  _selectedColor = color;
+                });
               },
               child: CircleAvatar(
                 radius: 18,
-                backgroundColor: isSelected ? Colors.deepPurple : Colors.transparent,
-                child: CircleAvatar(
-                  radius: 15,
-                  backgroundColor: color,
-                ),
+                backgroundColor: isSelected
+                    ? Colors.deepPurple
+                    : Colors.transparent,
+                child: CircleAvatar(radius: 15, backgroundColor: color),
               ),
             );
           }).toList(),
-        )
+        ),
       ],
     );
   }

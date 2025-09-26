@@ -24,7 +24,6 @@ import '../application/cart_controller.dart';
 //      thumbnail: product.thumbnail, // <-- PASSEZ L'IMAGE ICI
 //    );
 
-
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
 
@@ -54,7 +53,10 @@ class CartScreen extends ConsumerWidget {
               children: [
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     itemCount: cart.items.length,
                     itemBuilder: (context, index) {
                       final item = cart.items[index];
@@ -81,16 +83,24 @@ class _EmptyCart extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey.shade400),
+          Icon(
+            Icons.shopping_cart_outlined,
+            size: 80,
+            color: Colors.grey.shade400,
+          ),
           const SizedBox(height: 24),
           Text(
             'Your cart is empty',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
             'Looks like you haven\'t added anything yet.',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey.shade600),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.grey.shade600),
           ),
           const SizedBox(height: 32),
           ElevatedButton(
@@ -99,7 +109,9 @@ class _EmptyCart extends StatelessWidget {
               backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: const Text('Start Shopping'),
           ),
@@ -138,7 +150,10 @@ class _CartItemCard extends ConsumerWidget {
                   width: 80,
                   height: 80,
                   color: Colors.grey.shade200,
-                  child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey),
+                  child: const Icon(
+                    Icons.image_not_supported_outlined,
+                    color: Colors.grey,
+                  ),
                 ),
               ),
             ),
@@ -152,7 +167,10 @@ class _CartItemCard extends ConsumerWidget {
                     item.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -169,9 +187,15 @@ class _CartItemCard extends ConsumerWidget {
               children: [
                 // Bouton pour supprimer l'article
                 IconButton(
-                  icon: Icon(Icons.delete_outline, color: Colors.red.shade300, size: 20),
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: Colors.red.shade300,
+                    size: 20,
+                  ),
                   onPressed: () {
-                    ref.read(cartControllerProvider.notifier).updateQty(item.productId, 0);
+                    ref
+                        .read(cartControllerProvider.notifier)
+                        .updateQty(item.productId, 0);
                   },
                 ),
                 const SizedBox(height: 8),
@@ -179,14 +203,18 @@ class _CartItemCard extends ConsumerWidget {
                 _QuantitySelector(
                   quantity: item.quantity,
                   onIncrement: () {
-                    ref.read(cartControllerProvider.notifier).updateQty(item.productId, item.quantity + 1);
+                    ref
+                        .read(cartControllerProvider.notifier)
+                        .updateQty(item.productId, item.quantity + 1);
                   },
                   onDecrement: () {
-                    ref.read(cartControllerProvider.notifier).updateQty(item.productId, item.quantity - 1);
+                    ref
+                        .read(cartControllerProvider.notifier)
+                        .updateQty(item.productId, item.quantity - 1);
                   },
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -251,7 +279,11 @@ class _CheckoutSection extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2)),
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, -2),
+          ),
         ],
       ),
       child: Column(
@@ -262,8 +294,18 @@ class _CheckoutSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Subtotal', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey)),
-              Text('${total.toStringAsFixed(2)}€', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey)),
+              Text(
+                'Subtotal',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: Colors.grey),
+              ),
+              Text(
+                '${total.toStringAsFixed(2)}€',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: Colors.grey),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -271,10 +313,18 @@ class _CheckoutSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'Total',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Text(
                 '${total.toStringAsFixed(2)}€',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple,
+                ),
               ),
             ],
           ),
@@ -286,8 +336,13 @@ class _CheckoutSection extends StatelessWidget {
               backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             child: const Text('Checkout'),
           ),

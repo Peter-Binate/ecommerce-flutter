@@ -14,15 +14,22 @@ class CatalogRepository {
     // 1. Essaye le réseau avec la bonne URL
     try {
       final uri = Uri.parse('https://fakestoreapi.com/products');
-      final response = await _client.get(uri).timeout(const Duration(seconds: 10));
+      final response = await _client
+          .get(uri)
+          .timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
         // fakestoreapi retourne une liste directement
         final List list = json.decode(response.body) as List;
-        final products = list.map((e) => Product.fromJson(e as Map<String, dynamic>)).toList();
-        
+        final products = list
+            .map((e) => Product.fromJson(e as Map<String, dynamic>))
+            .toList();
+
         // La logique de cache reste la même
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString(_cacheProductsKey, json.encode(products.map((e) => e.toJson()).toList()));
+        await prefs.setString(
+          _cacheProductsKey,
+          json.encode(products.map((e) => e.toJson()).toList()),
+        );
         return products;
       }
     } catch (_) {
@@ -33,7 +40,9 @@ class CatalogRepository {
     final cached = prefs.getString(_cacheProductsKey);
     if (cached != null) {
       final List list = json.decode(cached) as List;
-      return list.map((e) => Product.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => Product.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
     return const <Product>[];
   }
@@ -41,13 +50,20 @@ class CatalogRepository {
   Future<Product?> fetchProduct(String id) async {
     // 1. Essaye le réseau
     try {
-      final uri = Uri.parse('https://fakestoreapi.com/products/$id'); // <-- URL MISE À JOUR
-      final response = await _client.get(uri).timeout(const Duration(seconds: 10));
+      final uri = Uri.parse(
+        'https://fakestoreapi.com/products/$id',
+      ); // <-- URL MISE À JOUR
+      final response = await _client
+          .get(uri)
+          .timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
         final p = Product.fromJson(data);
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('$_cacheProductPrefix$id', json.encode(p.toJson()));
+        await prefs.setString(
+          '$_cacheProductPrefix$id',
+          json.encode(p.toJson()),
+        );
         return p;
       }
     } catch (_) {}
@@ -125,5 +141,3 @@ class CatalogRepository {
 //     return null;
 //   }
 // }
-
-

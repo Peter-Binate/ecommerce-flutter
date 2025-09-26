@@ -16,30 +16,29 @@ void main() {
     category: 'tests',
   );
 
-  testWidgets('Test 1: _ProductCard affiche les informations et gère l\'ajout au panier', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp(
-          home: Scaffold(
-            body: ProductCard(product: fakeProduct),
+  testWidgets(
+    'Test 1: _ProductCard affiche les informations et gère l\'ajout au panier',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(body: ProductCard(product: fakeProduct)),
           ),
         ),
-      ),
-    );
+      );
 
-    expect(find.text('Test Product'), findsOneWidget);
-    expect(find.text('99.99€'), findsOneWidget);
+      expect(find.text('Test Product'), findsOneWidget);
+      expect(find.text('99.99€'), findsOneWidget);
 
-    expect(find.byType(Image), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
 
-    final addButton = find.byIcon(Icons.add);
-    expect(addButton, findsOneWidget);
-    await tester.tap(addButton);
-    
-    await tester.pumpAndSettle();
+      final addButton = find.byIcon(Icons.add);
+      expect(addButton, findsOneWidget);
+      await tester.tap(addButton);
 
-    expect(find.text('Test Product ajouté au panier'), findsOneWidget);
-  });
+      await tester.pumpAndSettle();
 
-  
+      expect(find.text('Test Product ajouté au panier'), findsOneWidget);
+    },
+  );
 }

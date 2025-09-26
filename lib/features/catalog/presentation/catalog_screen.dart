@@ -58,7 +58,9 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: CircleAvatar(
               radius: 16,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=1'), // Image de placeholder
+              backgroundImage: NetworkImage(
+                'https://i.pravatar.cc/150?img=1',
+              ), // Image de placeholder
             ),
           ),
         ],
@@ -71,7 +73,9 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
               children: [
                 Expanded(
                   child: TextField(
-                    onChanged: (v) => ref.read(catalogControllerProvider.notifier).setQuery(v),
+                    onChanged: (v) => ref
+                        .read(catalogControllerProvider.notifier)
+                        .setQuery(v),
                     decoration: InputDecoration(
                       hintText: 'Search...',
                       prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -88,7 +92,9 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
                     ),
                   ),
@@ -170,10 +176,20 @@ class ProductCard extends ConsumerWidget {
                         product.thumbnail,
                         fit: BoxFit.contain,
                         loadingBuilder: (context, child, progress) {
-                          return progress == null ? child : const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                          return progress == null
+                              ? child
+                              : const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                );
                         },
                         errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.image_not_supported_outlined, color: Colors.grey, size: 40);
+                          return const Icon(
+                            Icons.image_not_supported_outlined,
+                            color: Colors.grey,
+                            size: 40,
+                          );
                         },
                       ),
                     ),
@@ -182,7 +198,9 @@ class ProductCard extends ConsumerWidget {
                     top: 8,
                     right: 8,
                     child: Icon(
-                      Random().nextBool() ? Icons.favorite : Icons.favorite_border,
+                      Random().nextBool()
+                          ? Icons.favorite
+                          : Icons.favorite_border,
                       color: Colors.redAccent,
                     ),
                   ),
@@ -206,7 +224,10 @@ class ProductCard extends ConsumerWidget {
                     children: [
                       Text(
                         '${product.price.toStringAsFixed(2)}€',
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
                       ),
                       CircleAvatar(
                         radius: 14,
@@ -215,26 +236,34 @@ class ProductCard extends ConsumerWidget {
                           padding: EdgeInsets.zero,
                           iconSize: 16,
                           icon: const Icon(Icons.add, color: Colors.white),
-                         onPressed: () {
-                          ref.read(cartControllerProvider.notifier).addItem(
-                            id: product.id.toString(),
-                            title: product.title,
-                            price: product.price,
-                            thumbnail: product.thumbnail,
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('${product.title} ajouté au panier')),
-                          );
-                        },
+                          onPressed: () {
+                            ref
+                                .read(cartControllerProvider.notifier)
+                                .addItem(
+                                  id: product.id.toString(),
+                                  title: product.title,
+                                  price: product.price,
+                                  thumbnail: product.thumbnail,
+                                );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '${product.title} ajouté au panier',
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: List.generate(5, (index) {
                       return Icon(
-                        index < simulatedRating.floor() ? Icons.star : Icons.star_border,
+                        index < simulatedRating.floor()
+                            ? Icons.star
+                            : Icons.star_border,
                         color: Colors.amber,
                         size: 16,
                       );

@@ -19,7 +19,7 @@ class HomeScreen extends ConsumerWidget {
             },
             icon: const Icon(Icons.logout),
             tooltip: 'Logout',
-          )
+          ),
         ],
       ),
       body: Center(
@@ -40,5 +40,3 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
-
-

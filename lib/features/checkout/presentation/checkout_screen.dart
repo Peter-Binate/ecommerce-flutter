@@ -14,7 +14,7 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   bool isPaying = false;
   int currentStep = 0;
-  
+
   // Controllers pour les formulaires
   final _emailController = TextEditingController();
   final _firstNameController = TextEditingController();
@@ -23,7 +23,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   final _cityController = TextEditingController();
   final _postalCodeController = TextEditingController();
   final _phoneController = TextEditingController();
-  
+
   String selectedPaymentMethod = 'card';
   String selectedDeliveryOption = 'standard';
 
@@ -43,24 +43,26 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     setState(() => isPaying = true);
     await Future<void>.delayed(const Duration(seconds: 3));
     if (!mounted) return;
-    
+
     final cart = ref.read(cartControllerProvider);
     final repo = OrdersRepository();
-    await repo.addOrder(OrderRecord(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      total: cart.total,
-      createdAt: DateTime.now(),
-    ));
-    
+    await repo.addOrder(
+      OrderRecord(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        total: cart.total,
+        createdAt: DateTime.now(),
+      ),
+    );
+
     ref.read(cartControllerProvider.notifier).clear();
-    
+
     // Animation de succès
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => _buildSuccessDialog(),
     );
-    
+
     await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       Navigator.of(context).pop(); // Ferme le dialog
@@ -71,7 +73,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     final cart = ref.watch(cartControllerProvider);
-    
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -89,7 +91,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         children: [
           // Indicateur de progression
           _buildProgressIndicator(),
-          
+
           // Contenu principal
           Expanded(
             child: SingleChildScrollView(
@@ -104,7 +106,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               ),
             ),
           ),
-          
+
           // Boutons de navigation
           _buildBottomButtons(cart),
         ],
@@ -130,7 +132,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   Widget _buildStepIndicator(int step, String label, IconData icon) {
     final isActive = currentStep == step;
     final isCompleted = currentStep > step;
-    
+
     return Expanded(
       child: Column(
         children: [
@@ -138,10 +140,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isCompleted 
-                ? Colors.green 
-                : isActive 
-                  ? Colors.pinkAccent 
+              color: isCompleted
+                  ? Colors.green
+                  : isActive
+                  ? Colors.pinkAccent
                   : Colors.grey[300],
               shape: BoxShape.circle,
             ),
@@ -182,12 +184,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       children: [
         Text(
           'Récapitulatif de commande',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        
+
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -204,57 +206,75 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           child: Column(
             children: [
               // Articles
-              ...cart.items.map<Widget>((item) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(Icons.image_outlined, color: Colors.grey[400]),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              ...cart.items
+                  .map<Widget>(
+                    (item) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
                         children: [
-                          Text(
-                            item.title,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.image_outlined,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  'Qté: ${item.quantity}',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           Text(
-                            'Qté: ${item.quantity}',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                            '${(item.price * item.quantity).toStringAsFixed(2)}€',
+                            style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
                     ),
-                    Text(
-                      '${(item.price * item.quantity).toStringAsFixed(2)}€',
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              )).toList(),
-              
+                  )
+                  .toList(),
+
               const Divider(height: 24),
-              
+
               // Totaux
-              _buildSummaryRow('Sous-total', '${cart.total.toStringAsFixed(2)}€'),
+              _buildSummaryRow(
+                'Sous-total',
+                '${cart.total.toStringAsFixed(2)}€',
+              ),
               const SizedBox(height: 8),
               _buildSummaryRow(
-                'Livraison', 
+                'Livraison',
                 cart.total > 50 ? 'Gratuite' : '4,99€',
                 valueColor: cart.total > 50 ? Colors.green : null,
               ),
               const SizedBox(height: 8),
-              _buildSummaryRow('TVA (20%)', '${(cart.total * 0.2).toStringAsFixed(2)}€'),
+              _buildSummaryRow(
+                'TVA (20%)',
+                '${(cart.total * 0.2).toStringAsFixed(2)}€',
+              ),
               const Divider(height: 24),
               _buildSummaryRow(
                 'Total',
@@ -268,7 +288,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  Widget _buildSummaryRow(String label, String value, {bool isTotal = false, Color? valueColor}) {
+  Widget _buildSummaryRow(
+    String label,
+    String value, {
+    bool isTotal = false,
+    Color? valueColor,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -298,12 +323,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       children: [
         Text(
           'Informations de livraison',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        
+
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -383,18 +408,18 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             ],
           ),
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Options de livraison
         Text(
           'Mode de livraison',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        
+
         _buildDeliveryOption(
           'standard',
           'Livraison standard',
@@ -444,7 +469,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  Widget _buildDeliveryOption(String value, String title, String subtitle, String price, IconData icon) {
+  Widget _buildDeliveryOption(
+    String value,
+    String title,
+    String subtitle,
+    String price,
+    IconData icon,
+  ) {
     return GestureDetector(
       onTap: () => setState(() => selectedDeliveryOption = value),
       child: Container(
@@ -452,7 +483,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
-            color: selectedDeliveryOption == value ? Colors.pinkAccent : Colors.grey.shade300,
+            color: selectedDeliveryOption == value
+                ? Colors.pinkAccent
+                : Colors.grey.shade300,
             width: selectedDeliveryOption == value ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -462,14 +495,16 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: selectedDeliveryOption == value 
-                  ? Colors.pinkAccent.withOpacity(0.1)
-                  : Colors.grey.withOpacity(0.1),
+                color: selectedDeliveryOption == value
+                    ? Colors.pinkAccent.withOpacity(0.1)
+                    : Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 icon,
-                color: selectedDeliveryOption == value ? Colors.pinkAccent : Colors.grey,
+                color: selectedDeliveryOption == value
+                    ? Colors.pinkAccent
+                    : Colors.grey,
               ),
             ),
             const SizedBox(width: 12),
@@ -492,13 +527,19 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               price,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: selectedDeliveryOption == value ? Colors.pinkAccent : Colors.black,
+                color: selectedDeliveryOption == value
+                    ? Colors.pinkAccent
+                    : Colors.black,
               ),
             ),
             const SizedBox(width: 8),
             Icon(
-              selectedDeliveryOption == value ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-              color: selectedDeliveryOption == value ? Colors.pinkAccent : Colors.grey,
+              selectedDeliveryOption == value
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
+              color: selectedDeliveryOption == value
+                  ? Colors.pinkAccent
+                  : Colors.grey,
             ),
           ],
         ),
@@ -512,12 +553,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       children: [
         Text(
           'Mode de paiement',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        
+
         _buildPaymentOption(
           'card',
           'Carte bancaire',
@@ -538,9 +579,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           'Paiement rapide et sécurisé',
           Icons.phone_android,
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Informations de sécurité
         Container(
           padding: const EdgeInsets.all(16),
@@ -575,7 +616,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  Widget _buildPaymentOption(String value, String title, String subtitle, IconData icon) {
+  Widget _buildPaymentOption(
+    String value,
+    String title,
+    String subtitle,
+    IconData icon,
+  ) {
     return GestureDetector(
       onTap: () => setState(() => selectedPaymentMethod = value),
       child: Container(
@@ -583,31 +629,37 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
-            color: selectedPaymentMethod == value ? Colors.pinkAccent : Colors.grey.shade300,
+            color: selectedPaymentMethod == value
+                ? Colors.pinkAccent
+                : Colors.grey.shade300,
             width: selectedPaymentMethod == value ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: selectedPaymentMethod == value ? [
-            BoxShadow(
-              color: Colors.pinkAccent.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ] : null,
+          boxShadow: selectedPaymentMethod == value
+              ? [
+                  BoxShadow(
+                    color: Colors.pinkAccent.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: selectedPaymentMethod == value 
-                  ? Colors.pinkAccent.withOpacity(0.1)
-                  : Colors.grey.withOpacity(0.1),
+                color: selectedPaymentMethod == value
+                    ? Colors.pinkAccent.withOpacity(0.1)
+                    : Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 icon,
-                color: selectedPaymentMethod == value ? Colors.pinkAccent : Colors.grey,
+                color: selectedPaymentMethod == value
+                    ? Colors.pinkAccent
+                    : Colors.grey,
               ),
             ),
             const SizedBox(width: 12),
@@ -627,8 +679,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               ),
             ),
             Icon(
-              selectedPaymentMethod == value ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-              color: selectedPaymentMethod == value ? Colors.pinkAccent : Colors.grey,
+              selectedPaymentMethod == value
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
+              color: selectedPaymentMethod == value
+                  ? Colors.pinkAccent
+                  : Colors.grey,
             ),
           ],
         ),
@@ -665,23 +721,28 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   ),
                   child: const Text(
                     'Précédent',
-                    style: TextStyle(color: Colors.pinkAccent, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: Colors.pinkAccent,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
-            
+
             if (currentStep > 0) const SizedBox(width: 12),
-            
+
             Expanded(
               flex: currentStep == 0 ? 1 : 2,
               child: ElevatedButton(
-                onPressed: isPaying ? null : () {
-                  if (currentStep < 2) {
-                    setState(() => currentStep++);
-                  } else {
-                    _mockPay();
-                  }
-                },
+                onPressed: isPaying
+                    ? null
+                    : () {
+                        if (currentStep < 2) {
+                          setState(() => currentStep++);
+                        } else {
+                          _mockPay();
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.pinkAccent,
                   foregroundColor: Colors.white,
@@ -700,7 +761,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -708,10 +771,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         ],
                       )
                     : Text(
-                        currentStep == 2 
-                          ? 'Payer ${(cart.total + (cart.total > 50 ? 0 : 4.99)).toStringAsFixed(2)}€'
-                          : 'Continuer',
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                        currentStep == 2
+                            ? 'Payer ${(cart.total + (cart.total > 50 ? 0 : 4.99)).toStringAsFixed(2)}€'
+                            : 'Continuer',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
                       ),
               ),
             ),
@@ -744,10 +810,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             const SizedBox(height: 16),
             const Text(
               'Commande confirmée !',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(

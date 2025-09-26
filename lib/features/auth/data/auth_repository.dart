@@ -12,10 +12,11 @@ class AuthRepository {
   }
 
   Future<void> register(String email, String password) async {
-    await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   Future<void> signOut() => _auth.signOut();
 }
-
-

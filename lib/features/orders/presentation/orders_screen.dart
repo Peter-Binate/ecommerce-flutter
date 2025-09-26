@@ -13,7 +13,12 @@ class _OrdersScreenState extends State<OrdersScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   String _selectedFilter = 'Toutes';
-  final List<String> _filterOptions = ['Toutes', 'En cours', 'Livrées', 'Annulées'];
+  final List<String> _filterOptions = [
+    'Toutes',
+    'En cours',
+    'Livrées',
+    'Annulées',
+  ];
 
   @override
   void initState() {
@@ -68,8 +73,18 @@ class _OrdersScreenState extends State<OrdersScreen>
 
   String _formatDate(DateTime date) {
     final months = [
-      'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun',
-      'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'
+      'Jan',
+      'Fév',
+      'Mar',
+      'Avr',
+      'Mai',
+      'Jun',
+      'Jul',
+      'Aoû',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Déc',
     ];
     return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
@@ -115,11 +130,17 @@ class _OrdersScreenState extends State<OrdersScreen>
                     checkmarkColor: Colors.pink.shade600,
                     backgroundColor: Colors.white,
                     side: BorderSide(
-                      color: isSelected ? Colors.pink.shade400 : Colors.grey.shade300,
+                      color: isSelected
+                          ? Colors.pink.shade400
+                          : Colors.grey.shade300,
                     ),
                     labelStyle: TextStyle(
-                      color: isSelected ? Colors.pink.shade600 : Colors.grey.shade700,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      color: isSelected
+                          ? Colors.pink.shade600
+                          : Colors.grey.shade700,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                 );
@@ -140,7 +161,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                     ),
                   );
                 }
-                
+
                 final orders = snapshot.data!;
                 if (orders.isEmpty) {
                   return _buildEmptyState();
@@ -196,10 +217,7 @@ class _OrdersScreenState extends State<OrdersScreen>
             Text(
               'Vous n\'avez pas encore passé de commande.\nCommencez vos achats dès maintenant !',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                height: 1.5,
-              ),
+              style: TextStyle(color: Colors.grey.shade600, height: 1.5),
             ),
             const SizedBox(height: 32),
             ElevatedButton.icon(
@@ -209,11 +227,17 @@ class _OrdersScreenState extends State<OrdersScreen>
               icon: const Icon(Icons.shopping_cart, color: Colors.white),
               label: const Text(
                 'Commencer mes achats',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.pink.shade400,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -229,7 +253,7 @@ class _OrdersScreenState extends State<OrdersScreen>
     // Simulation du statut - en réalité, cela viendrait de votre modèle
     final statuses = ['En cours', 'Livrée', 'En cours', 'Livrée'];
     final status = statuses[index % statuses.length];
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Card(
@@ -258,7 +282,10 @@ class _OrdersScreenState extends State<OrdersScreen>
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: _getStatusColor(status).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
@@ -377,7 +404,9 @@ class _OrdersScreenState extends State<OrdersScreen>
                       LinearProgressIndicator(
                         value: 0.6, // Simulation
                         backgroundColor: Colors.grey.shade200,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.orange.shade400),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.orange.shade400,
+                        ),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       const SizedBox(height: 4),
@@ -420,7 +449,11 @@ class _OrdersScreenState extends State<OrdersScreen>
                           onPressed: () {
                             // Action recommander
                           },
-                          icon: const Icon(Icons.replay, size: 16, color: Colors.white),
+                          icon: const Icon(
+                            Icons.replay,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                           label: const Text(
                             'Recommander',
                             style: TextStyle(color: Colors.white),
@@ -439,7 +472,11 @@ class _OrdersScreenState extends State<OrdersScreen>
                           onPressed: () {
                             // Action suivre
                           },
-                          icon: const Icon(Icons.local_shipping, size: 16, color: Colors.white),
+                          icon: const Icon(
+                            Icons.local_shipping,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                           label: const Text(
                             'Suivre',
                             style: TextStyle(color: Colors.white),
@@ -488,7 +525,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            
+
             // En-tête
             Padding(
               padding: const EdgeInsets.all(20),
@@ -556,12 +593,21 @@ class _OrdersScreenState extends State<OrdersScreen>
                       ),
                     ),
                     const SizedBox(height: 12),
-                    _buildInfoRow('Date', _formatDate(order.createdAt.toLocal())),
-                    _buildInfoRow('Total', '${order.total.toStringAsFixed(2)}€'),
-                    _buildInfoRow('Articles', '${3 + (order.id.hashCode % 3)} articles'),
-                    
+                    _buildInfoRow(
+                      'Date',
+                      _formatDate(order.createdAt.toLocal()),
+                    ),
+                    _buildInfoRow(
+                      'Total',
+                      '${order.total.toStringAsFixed(2)}€',
+                    ),
+                    _buildInfoRow(
+                      'Articles',
+                      '${3 + (order.id.hashCode % 3)} articles',
+                    ),
+
                     const SizedBox(height: 20),
-                    
+
                     // Adresse de livraison (simulée)
                     Text(
                       'Adresse de livraison',
@@ -597,14 +643,8 @@ class _OrdersScreenState extends State<OrdersScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(color: Colors.grey.shade600),
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text(label, style: TextStyle(color: Colors.grey.shade600)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );

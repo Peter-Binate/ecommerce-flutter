@@ -33,10 +33,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
     _animationController.forward();
   }
 
@@ -61,7 +64,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
             content: Text(next.error!),
             backgroundColor: Colors.red.shade400,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         );
       }
@@ -73,11 +78,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.purple.shade100,
-              Colors.white,
-              Colors.pink.shade50,
-            ],
+            colors: [Colors.purple.shade100, Colors.white, Colors.pink.shade50],
             stops: const [0.0, 0.6, 1.0],
           ),
         ),
@@ -91,7 +92,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 40),
-                    
+
                     // Header avec animation
                     FadeTransition(
                       opacity: _fadeAnimation,
@@ -121,17 +122,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             const SizedBox(height: 32),
                             Text(
                               'Créer un compte',
-                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade800,
-                              ),
+                              style: Theme.of(context).textTheme.headlineMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey.shade800,
+                                  ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'Rejoignez-nous et commencez vos achats',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Colors.grey.shade600,
-                              ),
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(color: Colors.grey.shade600),
                             ),
                           ],
                         ),
@@ -171,7 +172,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                   if (value == null || value.isEmpty) {
                                     return 'Veuillez entrer votre email';
                                   }
-                                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                                  if (!RegExp(
+                                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                  ).hasMatch(value)) {
                                     return 'Email invalide';
                                   }
                                   return null;
@@ -194,7 +197,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                     });
                                   },
                                   icon: Icon(
-                                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                    _isPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
                                     color: Colors.grey.shade600,
                                   ),
                                 ),
@@ -205,7 +210,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                   if (value.length < 6) {
                                     return 'Le mot de passe doit contenir au moins 6 caractères';
                                   }
-                                  if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
+                                  if (!RegExp(
+                                    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)',
+                                  ).hasMatch(value)) {
                                     return 'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre';
                                   }
                                   return null;
@@ -224,11 +231,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                 suffixIcon: IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                                      _isConfirmPasswordVisible =
+                                          !_isConfirmPasswordVisible;
                                     });
                                   },
                                   icon: Icon(
-                                    _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                    _isConfirmPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
                                     color: Colors.grey.shade600,
                                   ),
                                 ),
@@ -268,7 +278,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                           fontSize: 14,
                                         ),
                                         children: [
-                                          const TextSpan(text: "J'accepte les "),
+                                          const TextSpan(
+                                            text: "J'accepte les ",
+                                          ),
                                           TextSpan(
                                             text: "conditions d'utilisation",
                                             style: TextStyle(
@@ -278,7 +290,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                                           ),
                                           const TextSpan(text: " et la "),
                                           TextSpan(
-                                            text: "politique de confidentialité",
+                                            text:
+                                                "politique de confidentialité",
                                             style: TextStyle(
                                               color: Colors.purple.shade400,
                                               fontWeight: FontWeight.w500,
@@ -295,7 +308,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
 
                               // Register button
                               _CustomButton(
-                                onPressed: (!_acceptTerms || authState.isLoading)
+                                onPressed:
+                                    (!_acceptTerms || authState.isLoading)
                                     ? null
                                     : () {
                                         if (_formKey.currentState!.validate()) {
@@ -339,9 +353,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                       child: Column(
                         children: [
                           _SocialButton(
-                            onPressed: authState.isLoading ? null : () {
-                              // Logique connexion Google
-                            },
+                            onPressed: authState.isLoading
+                                ? null
+                                : () {
+                                    // Logique connexion Google
+                                  },
                             icon: Icons.g_mobiledata,
                             text: 'Continuer avec Google',
                             backgroundColor: Colors.white,
@@ -349,9 +365,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                           ),
                           const SizedBox(height: 16),
                           _SocialButton(
-                            onPressed: authState.isLoading ? null : () {
-                              // Logique connexion Apple
-                            },
+                            onPressed: authState.isLoading
+                                ? null
+                                : () {
+                                    // Logique connexion Apple
+                                  },
                             icon: Icons.apple,
                             text: 'Continuer avec Apple',
                             backgroundColor: Colors.black,
@@ -374,7 +392,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen>
                             style: TextStyle(color: Colors.grey.shade600),
                           ),
                           TextButton(
-                            onPressed: authState.isLoading ? null : () => context.go('/login'),
+                            onPressed: authState.isLoading
+                                ? null
+                                : () => context.go('/login'),
                             child: Text(
                               'Se connecter',
                               style: TextStyle(
@@ -462,7 +482,10 @@ class _CustomTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Colors.red),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
           ),
         ),
       ],
@@ -505,7 +528,9 @@ class _CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: isLoading
             ? const SizedBox(
@@ -555,7 +580,9 @@ class _SocialButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           backgroundColor: backgroundColor,
           side: BorderSide(color: Colors.grey.shade200),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -658,5 +685,3 @@ class _SocialButton extends StatelessWidget {
 //     );
 //   }
 // }
-
-

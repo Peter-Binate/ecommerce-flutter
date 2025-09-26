@@ -12,16 +12,16 @@ class CartItem {
     required this.title,
     required this.price,
     required this.quantity,
-    required this.thumbnail, 
+    required this.thumbnail,
   });
 
   CartItem copyWith({int? quantity}) => CartItem(
-        productId: productId,
-        title: title,
-        price: price,
-        quantity: quantity ?? this.quantity,
-        thumbnail: thumbnail, 
-      );
+    productId: productId,
+    title: title,
+    price: price,
+    quantity: quantity ?? this.quantity,
+    thumbnail: thumbnail,
+  );
 }
 
 class CartState {
@@ -43,7 +43,13 @@ class CartController extends StateNotifier<CartState> {
     if (idx == -1) {
       state = CartState([
         ...state.items,
-        CartItem(productId: id, title: title, price: price, quantity: 1, thumbnail: thumbnail)
+        CartItem(
+          productId: id,
+          title: title,
+          price: price,
+          quantity: 1,
+          thumbnail: thumbnail,
+        ),
       ]);
     } else {
       final updated = [...state.items];
@@ -67,4 +73,6 @@ class CartController extends StateNotifier<CartState> {
   void clear() => state = const CartState(<CartItem>[]);
 }
 
-final cartControllerProvider = StateNotifierProvider<CartController, CartState>((ref) => CartController());
+final cartControllerProvider = StateNotifierProvider<CartController, CartState>(
+  (ref) => CartController(),
+);
