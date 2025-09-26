@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:math'; // Pour simuler les notes
+import 'dart:math';
 import '../../catalog/application/catalog_controller.dart';
-import '../../cart/application/cart_controller.dart'; // Importez le contrôleur du panier
-import '../domain/product.dart'; // Assurez-vous d'importer votre modèle Product
+import '../../cart/application/cart_controller.dart';
+import '../domain/product.dart';
 
 class CatalogScreen extends ConsumerStatefulWidget {
   const CatalogScreen({super.key});
@@ -112,7 +112,6 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
           ),
         ),
       ),
-      // Le reste du corps de l'écran reste inchangé
       body: Builder(
         builder: (_) {
           if (state.isLoading && state.products.isEmpty) {
@@ -132,23 +131,22 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
             itemCount: list.length,
             itemBuilder: (context, index) {
               final p = list[index];
-              return _ProductCard(product: p);
+              return ProductCard(product: p);
             },
           );
         },
       ),
-      backgroundColor: Colors.grey[50], // Couleur de fond pour correspondre
+      backgroundColor: Colors.grey[50],
     );
   }
 }
 
-/// Widget pour la carte de produit personnalisée (INCHANGÉ)
-class _ProductCard extends ConsumerWidget { // Changé en ConsumerWidget
-  const _ProductCard({required this.product});
+class ProductCard extends ConsumerWidget {
+  const ProductCard({required this.product});
   final Product product;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) { // Ajout de WidgetRef
+  Widget build(BuildContext context, WidgetRef ref) {
     final simulatedRating = 3.5 + Random().nextDouble() * 1.5;
 
     return GestureDetector(
