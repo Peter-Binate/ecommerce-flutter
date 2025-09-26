@@ -4,7 +4,9 @@ import 'package:ecommerce/features/auth/data/auth_repository.dart';
 import 'package:ecommerce/features/catalog/data/catalog_repository.dart';
 import 'package:ecommerce/features/cart/application/cart_controller.dart';
 
-@GenerateMocks([AuthRepository, CatalogRepository])
+import 'package:firebase_auth/firebase_auth.dart';
+
+@GenerateMocks([AuthRepository, CatalogRepository, User])
 void main() {
   group('CartController Tests', () {
     test('Test 1: Le panier initial doit être vide', () {
