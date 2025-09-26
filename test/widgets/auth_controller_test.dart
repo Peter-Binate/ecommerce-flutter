@@ -81,5 +81,44 @@ void main() {
         expect(controller.debugState.isLoading, isFalse);
       },
     );
+
+    test('Test 3: register avec succès', () async {
+      // ARRANGE
+      when(
+        mockAuthRepository.register('test@test.com', 'password'),
+      ).thenAnswer((_) async {});
+      when(
+        mockAuthRepository.authStateChanges(),
+      ).thenAnswer((_) => Stream.value(mockUser));
+      when(mockAuthRepository.currentUser).thenReturn(null);
+      final container = createContainer();
+      final controller = container.read(authControllerProvider.notifier);
+
+      // ACT
+      await controller.register('test@test.com', 'password');
+
+      // ASSERT
+      verify(
+        mockAuthRepository.register('test@test.com', 'password'),
+      ).called(1);
+      expect(controller.debugState.error, isNull);
+    });
+
+    test('Test 4: signOut appelle la méthode du repository', () async {
+      // ARRANGE
+      when(mockAuthRepository.signOut()).thenAnswer((_) async {});
+      when(
+        mockAuthRepository.authStateChanges(),
+      ).thenAnswer((_) => Stream.value(null));
+      when(mockAuthRepository.currentUser).thenReturn(mockUser);
+      final container = createContainer();
+      final controller = container.read(authControllerProvider.notifier);
+
+      // ACT
+      await controller.signOut();
+
+      // ASSERT
+      verify(mockAuthRepository.signOut()).called(1);
+    });
   });
 }
