@@ -11,11 +11,17 @@ class AuthState {
 
   const AuthState({required this.isLoading, this.error, required this.user});
 
-  AuthState copyWith({bool? isLoading, String? error, User? user}) => AuthState(
-    isLoading: isLoading ?? this.isLoading,
-    error: error,
-    user: user ?? this.user,
-  );
+  AuthState copyWith({
+    bool? isLoading,
+    String? error,
+    User? user,
+    bool clearError = false,
+  }) =>
+      AuthState(
+        isLoading: isLoading ?? this.isLoading,
+        error: clearError ? null : error ?? this.error,
+        user: user ?? this.user,
+      );
 }
 
 class AuthController extends StateNotifier<AuthState> {
@@ -36,28 +42,26 @@ class AuthController extends StateNotifier<AuthState> {
   }
 
   Future<void> signIn(String email, String password) async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
       await _repo.signIn(email, password);
-    } on FirebaseAuthException catch (e) {
-      state = state.copyWith(error: e.message);
-    } catch (e) {
-      state = state.copyWith(error: '$e');
-    } finally {
       state = state.copyWith(isLoading: false);
+    } on FirebaseAuthException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.message);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: '$e');
     }
   }
 
   Future<void> register(String email, String password) async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
       await _repo.register(email, password);
-    } on FirebaseAuthException catch (e) {
-      state = state.copyWith(error: e.message);
-    } catch (e) {
-      state = state.copyWith(error: '$e');
-    } finally {
       state = state.copyWith(isLoading: false);
+    } on FirebaseAuthException catch (e) {
+      state = state.copyWith(isLoading: false, error: e.message);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: '$e');
     }
   }
 
