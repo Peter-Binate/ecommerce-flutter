@@ -16,12 +16,11 @@ class AuthState {
     String? error,
     User? user,
     bool clearError = false,
-  }) =>
-      AuthState(
-        isLoading: isLoading ?? this.isLoading,
-        error: clearError ? null : error ?? this.error,
-        user: user ?? this.user,
-      );
+  }) => AuthState(
+    isLoading: isLoading ?? this.isLoading,
+    error: clearError ? null : error ?? this.error,
+    user: user ?? this.user,
+  );
 }
 
 class AuthController extends StateNotifier<AuthState> {
