@@ -20,7 +20,9 @@ GoRouter createAppRouter() {
     refreshListenable: GoRouterRefreshStream(auth.authStateChanges()),
     redirect: (context, state) {
       final bool isLoggedIn = auth.currentUser != null;
-      final bool isAuthRoute = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+      final bool isAuthRoute =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register';
 
       if (!isLoggedIn && !isAuthRoute) {
         return '/login';
@@ -31,18 +33,12 @@ GoRouter createAppRouter() {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const HomeScreen(),
-      ),
+      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
       GoRoute(
         path: '/catalog',
         builder: (context, state) => const CatalogScreen(),
@@ -63,10 +59,7 @@ GoRouter createAppRouter() {
           return ProductScreen(productId: id);
         },
       ),
-      GoRoute(
-        path: '/cart',
-        builder: (context, state) => const CartScreen(),
-      ),
+      GoRoute(path: '/cart', builder: (context, state) => const CartScreen()),
       GoRoute(
         path: '/checkout',
         builder: (context, state) => const CheckoutScreen(),
@@ -95,5 +88,3 @@ class GoRouterRefreshStream extends ChangeNotifier {
     super.dispose();
   }
 }
-
-

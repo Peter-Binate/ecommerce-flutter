@@ -23,7 +23,9 @@ class Product {
     return Product(
       id: (json['id'] ?? '').toString(),
       title: (json['title'] ?? '').toString(),
-      price: (json['price'] is num) ? (json['price'] as num).toDouble() : double.tryParse('${json['price']}') ?? 0,
+      price: (json['price'] is num)
+          ? (json['price'] as num).toDouble()
+          : double.tryParse('${json['price']}') ?? 0,
       thumbnail: imageUrl, // On utilise 'image' pour la miniature
       images: [imageUrl], // On met 'image' dans une liste pour 'images'
       description: (json['description'] ?? '').toString(),
@@ -32,12 +34,12 @@ class Product {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'price': price,
-        'thumbnail': thumbnail,
-        'images': images,
-        'description': description,
-        'category': category,
-      };
+    'id': id,
+    'title': title,
+    'price': price,
+    'thumbnail': thumbnail,
+    'images': images,
+    'description': description,
+    'category': category,
+  };
 }

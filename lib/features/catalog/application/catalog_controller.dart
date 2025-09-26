@@ -21,7 +21,12 @@ class CatalogState {
     this.error,
   });
 
-  CatalogState copyWith({List<Product>? products, String? query, bool? isLoading, String? error}) {
+  CatalogState copyWith({
+    List<Product>? products,
+    String? query,
+    bool? isLoading,
+    String? error,
+  }) {
     return CatalogState(
       products: products ?? this.products,
       query: query ?? this.query,
@@ -32,7 +37,8 @@ class CatalogState {
 }
 
 class CatalogController extends StateNotifier<CatalogState> {
-  CatalogController(this._repo) : super(const CatalogState(products: [], query: '', isLoading: false));
+  CatalogController(this._repo)
+    : super(const CatalogState(products: [], query: '', isLoading: false));
 
   final CatalogRepository _repo;
 
@@ -51,14 +57,21 @@ class CatalogController extends StateNotifier<CatalogState> {
   List<Product> get filtered {
     if (state.query.isEmpty) return state.products;
     final q = state.query.toLowerCase();
-    return state.products.where((p) => p.title.toLowerCase().contains(q) || p.category.toLowerCase().contains(q)).toList();
+    return state.products
+        .where(
+          (p) =>
+              p.title.toLowerCase().contains(q) ||
+              p.category.toLowerCase().contains(q),
+        )
+        .toList();
   }
 }
 
-final catalogRepositoryProvider = Provider<CatalogRepository>((ref) => CatalogRepository());
-final catalogControllerProvider = StateNotifierProvider<CatalogController, CatalogState>((ref) {
-  final repo = ref.watch(catalogRepositoryProvider);
-  return CatalogController(repo);
-});
-
-
+final catalogRepositoryProvider = Provider<CatalogRepository>(
+  (ref) => CatalogRepository(),
+);
+final catalogControllerProvider =
+    StateNotifierProvider<CatalogController, CatalogState>((ref) {
+      final repo = ref.watch(catalogRepositoryProvider);
+      return CatalogController(repo);
+    });

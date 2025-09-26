@@ -85,5 +85,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'stormshop.firebasestorage.app',
     measurementId: 'G-WECT69LGL9',
   );
-
 }

@@ -11,14 +11,19 @@ class AuthState {
 
   const AuthState({required this.isLoading, this.error, required this.user});
 
-  AuthState copyWith({bool? isLoading, String? error, User? user}) =>
-      AuthState(isLoading: isLoading ?? this.isLoading, error: error, user: user ?? this.user);
+  AuthState copyWith({bool? isLoading, String? error, User? user}) => AuthState(
+    isLoading: isLoading ?? this.isLoading,
+    error: error,
+    user: user ?? this.user,
+  );
 }
 
 class AuthController extends StateNotifier<AuthState> {
   AuthController(this._repo)
-      : super(AuthState(isLoading: false, user: _repo.currentUser)) {
-    _sub = _repo.authStateChanges().listen((u) => state = state.copyWith(user: u));
+    : super(AuthState(isLoading: false, user: _repo.currentUser)) {
+    _sub = _repo.authStateChanges().listen(
+      (u) => state = state.copyWith(user: u),
+    );
   }
 
   final AuthRepository _repo;
@@ -59,10 +64,12 @@ class AuthController extends StateNotifier<AuthState> {
   Future<void> signOut() => _repo.signOut();
 }
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepository());
-final authControllerProvider = StateNotifierProvider<AuthController, AuthState>((ref) {
-  final repo = ref.watch(authRepositoryProvider);
-  return AuthController(repo);
-});
-
-
+final authRepositoryProvider = Provider<AuthRepository>(
+  (ref) => AuthRepository(),
+);
+final authControllerProvider = StateNotifierProvider<AuthController, AuthState>(
+  (ref) {
+    final repo = ref.watch(authRepositoryProvider);
+    return AuthController(repo);
+  },
+);
