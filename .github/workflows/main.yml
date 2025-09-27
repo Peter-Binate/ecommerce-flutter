@@ -1,39 +1,28 @@
-name: Flutter CI/CD
+name: Flutter Blue/Green CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "production"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "production"
 
 jobs:
   build_and_test:
     name: Build & Test
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install lcov
-        run: sudo apt-get -y install lcov
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' 
-          
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Check formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Analyze code
-        run: dart analyze .
-
-      - name: Run tests and generate coverage
-        run: flutter test --coverage
+          channel: 'stable'
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: dart analyze .
+      - run: flutter test --coverage
 
       - name: Check code coverage
         run: |
@@ -48,36 +37,49 @@ jobs:
           else
             echo "La couverture de code est suffisante."
           fi
-
+          
       - name: Build web application
         run: flutter build web --release
-
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-web
           path: build/web
 
-  deploy:
-    name: Deploy to Firebase Hosting
+  deploy_green:
+    name: Deploy to Green (main)
     needs: build_and_test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           name: build-web
           path: build/web
-
-      - name: Deploy to Firebase Hosting
+      - name: Deploy to Firebase Hosting (Green)
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
-          channelId: live
+          target: green
+
+  deploy_blue:
+    name: Deploy to Blue (production)
+    needs: build_and_test
+    if: github.ref == 'refs/heads/production' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-web
+          path: build/web
+      - name: Deploy to Firebase Hosting (Blue)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
+          target: blue
