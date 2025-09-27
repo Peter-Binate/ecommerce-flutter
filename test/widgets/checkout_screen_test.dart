@@ -12,11 +12,7 @@ class OrderRecord {
   final double total;
   final DateTime createdAt;
 
-  OrderRecord({
-    required this.id,
-    required this.total,
-    required this.createdAt,
-  });
+  OrderRecord({required this.id, required this.total, required this.createdAt});
 }
 
 // Mock de OrdersRepository
@@ -31,10 +27,7 @@ class OrdersRepository {
 final _router = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const CheckoutScreen(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const CheckoutScreen()),
     GoRoute(
       path: '/orders',
       builder: (context, state) => const Scaffold(body: Text('Orders Page')),
@@ -54,16 +47,24 @@ void main() {
       // ARRANGE
       final container = ProviderContainer();
       final cartNotifier = container.read(cartControllerProvider.notifier);
-      cartNotifier.addItem(id: '1', title: 'Laptop', price: 1200, thumbnail: 'url');
-      cartNotifier.addItem(id: '2', title: 'Souris', price: 50, thumbnail: 'url');
+      cartNotifier.addItem(
+        id: '1',
+        title: 'Laptop',
+        price: 1200,
+        thumbnail: 'url',
+      );
+      cartNotifier.addItem(
+        id: '2',
+        title: 'Souris',
+        price: 50,
+        thumbnail: 'url',
+      );
 
       // ACT
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp.router(
-            routerConfig: _router,
-          ),
+          child: MaterialApp.router(routerConfig: _router),
         ),
       );
 
@@ -90,142 +91,150 @@ void main() {
     },
   );
 
-  testWidgets(
-    'Test 2: CheckoutScreen - Navigation vers l\'étape livraison',
-    (WidgetTester tester) async {
-      // ARRANGE
-      final container = ProviderContainer();
-      final cartNotifier = container.read(cartControllerProvider.notifier);
-      cartNotifier.addItem(id: '1', title: 'Test Product', price: 100, thumbnail: 'url');
+  testWidgets('Test 2: CheckoutScreen - Navigation vers l\'étape livraison', (
+    WidgetTester tester,
+  ) async {
+    // ARRANGE
+    final container = ProviderContainer();
+    final cartNotifier = container.read(cartControllerProvider.notifier);
+    cartNotifier.addItem(
+      id: '1',
+      title: 'Test Product',
+      price: 100,
+      thumbnail: 'url',
+    );
 
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp.router(
-            routerConfig: _router,
-          ),
-        ),
-      );
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(routerConfig: _router),
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      // ACT - Aller à l'étape livraison
-      await tester.tap(find.text('Continuer'));
-      await tester.pumpAndSettle();
+    // ACT - Aller à l'étape livraison
+    await tester.tap(find.text('Continuer'));
+    await tester.pumpAndSettle();
 
-      // ASSERT
-      expect(find.text('Informations de livraison'), findsOneWidget);
-      expect(find.text('Mode de livraison'), findsOneWidget);
-      expect(find.text('Livraison standard'), findsOneWidget);
-      expect(find.text('Livraison express'), findsOneWidget);
+    // ASSERT
+    expect(find.text('Informations de livraison'), findsOneWidget);
+    expect(find.text('Mode de livraison'), findsOneWidget);
+    expect(find.text('Livraison standard'), findsOneWidget);
+    expect(find.text('Livraison express'), findsOneWidget);
 
-      // Vérifier les champs de formulaire
-      expect(find.byType(TextField), findsNWidgets(7)); // 7 champs au total
+    // Vérifier les champs de formulaire
+    expect(find.byType(TextField), findsNWidgets(7)); // 7 champs au total
 
-      // Vérifier les boutons de navigation
-      expect(find.text('Précédent'), findsOneWidget);
-      expect(find.text('Continuer'), findsOneWidget);
-    },
-  );
+    // Vérifier les boutons de navigation
+    expect(find.text('Précédent'), findsOneWidget);
+    expect(find.text('Continuer'), findsOneWidget);
+  });
 
-  testWidgets(
-    'Test 3: CheckoutScreen - Sélection des modes de paiement',
-    (WidgetTester tester) async {
-      // ARRANGE
-      final container = ProviderContainer();
-      final cartNotifier = container.read(cartControllerProvider.notifier);
-      cartNotifier.addItem(id: '1', title: 'Test Product', price: 100, thumbnail: 'url');
+  testWidgets('Test 3: CheckoutScreen - Sélection des modes de paiement', (
+    WidgetTester tester,
+  ) async {
+    // ARRANGE
+    final container = ProviderContainer();
+    final cartNotifier = container.read(cartControllerProvider.notifier);
+    cartNotifier.addItem(
+      id: '1',
+      title: 'Test Product',
+      price: 100,
+      thumbnail: 'url',
+    );
 
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp.router(
-            routerConfig: _router,
-          ),
-        ),
-      );
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(routerConfig: _router),
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      // ACT - Aller à l'étape paiement
-      await tester.tap(find.text('Continuer'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Continuer'));
-      await tester.pumpAndSettle();
+    // ACT - Aller à l'étape paiement
+    await tester.tap(find.text('Continuer'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Continuer'));
+    await tester.pumpAndSettle();
 
-      // ASSERT - Vérifier l'état initial (carte sélectionnée)
-      expect(find.byIcon(Icons.radio_button_checked), findsOneWidget);
-      expect(find.byIcon(Icons.radio_button_unchecked), findsNWidgets(2));
+    // ASSERT - Vérifier l'état initial (carte sélectionnée)
+    expect(find.byIcon(Icons.radio_button_checked), findsOneWidget);
+    expect(find.byIcon(Icons.radio_button_unchecked), findsNWidgets(2));
 
-      // Sélectionner PayPal
-      await tester.tap(find.text('PayPal'));
-      await tester.pumpAndSettle();
+    // Sélectionner PayPal
+    await tester.tap(find.text('PayPal'));
+    await tester.pumpAndSettle();
 
-      // Vérifier que PayPal est maintenant sélectionné
-      expect(find.byIcon(Icons.radio_button_checked), findsOneWidget);
-      expect(find.byIcon(Icons.radio_button_unchecked), findsNWidgets(2));
-    },
-  );
+    // Vérifier que PayPal est maintenant sélectionné
+    expect(find.byIcon(Icons.radio_button_checked), findsOneWidget);
+    expect(find.byIcon(Icons.radio_button_unchecked), findsNWidgets(2));
+  });
 
-  testWidgets(
-    'Test 6: CheckoutScreen - Navigation arrière',
-    (WidgetTester tester) async {
-      // ARRANGE
-      final container = ProviderContainer();
-      final cartNotifier = container.read(cartControllerProvider.notifier);
-      cartNotifier.addItem(id: '1', title: 'Test Product', price: 100, thumbnail: 'url');
+  testWidgets('Test 6: CheckoutScreen - Navigation arrière', (
+    WidgetTester tester,
+  ) async {
+    // ARRANGE
+    final container = ProviderContainer();
+    final cartNotifier = container.read(cartControllerProvider.notifier);
+    cartNotifier.addItem(
+      id: '1',
+      title: 'Test Product',
+      price: 100,
+      thumbnail: 'url',
+    );
 
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp.router(
-            routerConfig: _router,
-          ),
-        ),
-      );
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(routerConfig: _router),
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      // ACT - Aller à l'étape livraison
-      await tester.tap(find.text('Continuer'));
-      await tester.pumpAndSettle();
-      
-      expect(find.text('Informations de livraison'), findsOneWidget);
+    // ACT - Aller à l'étape livraison
+    await tester.tap(find.text('Continuer'));
+    await tester.pumpAndSettle();
 
-      // Retour à l'étape résumé
-      await tester.tap(find.text('Précédent'));
-      await tester.pumpAndSettle();
+    expect(find.text('Informations de livraison'), findsOneWidget);
 
-      // ASSERT
-      expect(find.text('Récapitulatif de commande'), findsOneWidget);
-      expect(find.text('Précédent'), findsNothing);
-    },
-  );
+    // Retour à l'étape résumé
+    await tester.tap(find.text('Précédent'));
+    await tester.pumpAndSettle();
 
-  testWidgets(
-    'Test 7: CheckoutScreen - Calcul des frais de livraison',
-    (WidgetTester tester) async {
-      final container1 = ProviderContainer();
-      final cartNotifier1 = container1.read(cartControllerProvider.notifier);
-      cartNotifier1.addItem(id: '1', title: 'Petit article', price: 30, thumbnail: 'url');
+    // ASSERT
+    expect(find.text('Récapitulatif de commande'), findsOneWidget);
+    expect(find.text('Précédent'), findsNothing);
+  });
 
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container1,
-          child: MaterialApp.router(
-            routerConfig: _router,
-          ),
-        ),
-      );
+  testWidgets('Test 7: CheckoutScreen - Calcul des frais de livraison', (
+    WidgetTester tester,
+  ) async {
+    final container1 = ProviderContainer();
+    final cartNotifier1 = container1.read(cartControllerProvider.notifier);
+    cartNotifier1.addItem(
+      id: '1',
+      title: 'Petit article',
+      price: 30,
+      thumbnail: 'url',
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container1,
+        child: MaterialApp.router(routerConfig: _router),
+      ),
+    );
 
-      expect(find.text('4,99€'), findsOneWidget); // Frais de livraison
-      expect(find.text('34.99€'), findsOneWidget); // Total avec livraison
-      
-      container1.dispose();
-    },
-  );
+    await tester.pumpAndSettle();
+
+    expect(find.text('4,99€'), findsOneWidget); // Frais de livraison
+    expect(find.text('34.99€'), findsOneWidget); // Total avec livraison
+
+    container1.dispose();
+  });
 
   testWidgets(
     'Test 8: CheckoutScreen - Livraison gratuite pour montant > 50€',
@@ -233,14 +242,17 @@ void main() {
       // ARRANGE - Panier avec montant > 50€
       final container = ProviderContainer();
       final cartNotifier = container.read(cartControllerProvider.notifier);
-      cartNotifier.addItem(id: '1', title: 'Gros article', price: 75, thumbnail: 'url');
+      cartNotifier.addItem(
+        id: '1',
+        title: 'Gros article',
+        price: 75,
+        thumbnail: 'url',
+      );
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp.router(
-            routerConfig: _router,
-          ),
+          child: MaterialApp.router(routerConfig: _router),
         ),
       );
 
@@ -257,14 +269,17 @@ void main() {
       // ARRANGE
       final container = ProviderContainer();
       final cartNotifier = container.read(cartControllerProvider.notifier);
-      cartNotifier.addItem(id: '1', title: 'Test Product', price: 100, thumbnail: 'url');
+      cartNotifier.addItem(
+        id: '1',
+        title: 'Test Product',
+        price: 100,
+        thumbnail: 'url',
+      );
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp.router(
-            routerConfig: _router,
-          ),
+          child: MaterialApp.router(routerConfig: _router),
         ),
       );
 
@@ -308,14 +323,17 @@ void main() {
       // ARRANGE
       final container = ProviderContainer();
       final cartNotifier = container.read(cartControllerProvider.notifier);
-      cartNotifier.addItem(id: '1', title: 'Laptop', price: 1200, thumbnail: 'url');
+      cartNotifier.addItem(
+        id: '1',
+        title: 'Laptop',
+        price: 1200,
+        thumbnail: 'url',
+      );
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp.router(
-            routerConfig: _router,
-          ),
+          child: MaterialApp.router(routerConfig: _router),
         ),
       );
 
@@ -323,11 +341,11 @@ void main() {
 
       // ACT - Navigation complète jusqu'au paiement
       expect(find.text('Récapitulatif de commande'), findsOneWidget);
-      
+
       await tester.tap(find.text('Continuer'));
       await tester.pumpAndSettle();
       expect(find.text('Informations de livraison'), findsOneWidget);
-      
+
       await tester.tap(find.text('Continuer'));
       await tester.pumpAndSettle();
       expect(find.text('Mode de paiement'), findsOneWidget);
@@ -335,7 +353,10 @@ void main() {
       // Vérifier le bouton de paiement
       final payButton = find.textContaining('Payer');
       expect(payButton, findsOneWidget);
-      expect(find.textContaining('1200.00€'), findsAtLeastNWidgets(1)); // Gratuit car > 50€
+      expect(
+        find.textContaining('1200.00€'),
+        findsAtLeastNWidgets(1),
+      ); // Gratuit car > 50€
 
       // ASSERT - On ne clique pas sur payer pour éviter la complexité des mocks
       // mais on vérifie que tout est en place
