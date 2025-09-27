@@ -13,7 +13,6 @@ class CartScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: pageBackgroundColor,
-      // --- AppBar stylisée, cohérente avec les autres écrans ---
       appBar: AppBar(
         title: const Text('My Cart'),
         centerTitle: true,
