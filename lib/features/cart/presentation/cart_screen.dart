@@ -3,27 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../application/cart_controller.dart';
 
-// Pour que les images s'affichent, une petite modification est nécessaire.
-// J'ai écrit le code en supposant que vous pouvez ajouter un champ `thumbnail` à votre `CartItem`.
-//
-// 1. DANS `cart_controller.dart`, modifiez `CartItem` :
-//    class CartItem {
-//      final String productId;
-//      final String title;
-//      final String thumbnail; // <-- AJOUTEZ CECI
-//      final double price;
-//      final int quantity;
-//      // Mettez à jour le constructeur et la méthode `copyWith` en conséquence.
-//    }
-//
-// 2. LORS DE L'AJOUT AU PANIER (dans product_screen.dart et catalog_screen.dart) :
-//    ref.read(cartControllerProvider.notifier).addItem(
-//      id: product.id,
-//      title: product.title,
-//      price: product.price,
-//      thumbnail: product.thumbnail, // <-- PASSEZ L'IMAGE ICI
-//    );
-
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
 
@@ -34,7 +13,6 @@ class CartScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: pageBackgroundColor,
-      // --- AppBar stylisée, cohérente avec les autres écrans ---
       appBar: AppBar(
         title: const Text('My Cart'),
         centerTitle: true,
@@ -46,9 +24,8 @@ class CartScreen extends ConsumerWidget {
           onPressed: () => context.pop(),
         ),
       ),
-      // --- Gestion de l'état du panier (vide ou non) ---
       body: cart.items.isEmpty
-          ? const _EmptyCart() // Widget pour le panier vide
+          ? const _EmptyCart()
           : Column(
               children: [
                 Expanded(
@@ -60,12 +37,10 @@ class CartScreen extends ConsumerWidget {
                     itemCount: cart.items.length,
                     itemBuilder: (context, index) {
                       final item = cart.items[index];
-                      // --- Carte personnalisée pour chaque article ---
                       return _CartItemCard(item: item);
                     },
                   ),
                 ),
-                // --- Section "collante" pour le total et le paiement ---
                 _CheckoutSection(total: cart.total),
               ],
             ),

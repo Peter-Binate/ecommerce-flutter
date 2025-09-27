@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:math';
+import 'package:ecommerce/features/favorites/application/favorites_controller.dart';
 import '../../catalog/application/catalog_controller.dart';
 import '../../cart/application/cart_controller.dart';
 import '../domain/product.dart';
@@ -17,7 +18,6 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   @override
   void initState() {
     super.initState();
-    // On utilise microtask pour s'assurer que le contexte est disponible.
     Future.microtask(() => ref.read(catalogControllerProvider.notifier).load());
   }
 
@@ -25,7 +25,6 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(catalogControllerProvider);
     final list = ref.read(catalogControllerProvider.notifier).filtered;
-    // On écoute le panier pour le badge
     final cartItemsCount = ref.watch(cartControllerProvider).items.length;
 
     return Scaffold(
@@ -33,11 +32,10 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
         // Icône à gauche
         leading: IconButton(
           onPressed: () {
-            // Logique pour le menu ou autre
+            // menu
           },
           icon: const Icon(Icons.apps_outlined),
         ),
-        // Le titre est automatiquement centré par défaut
         title: const Text('Home'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -46,7 +44,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
         actions: [
           // Icône panier avec un badge
           IconButton(
-            onPressed: () => context.go('/cart'),
+            onPressed: () => context.push('/cart'),
             icon: Badge(
               label: Text('$cartItemsCount'),
               isLabelVisible: cartItemsCount > 0,
@@ -54,17 +52,19 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
             ),
           ),
           // Avatar utilisateur
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundImage: NetworkImage(
-                'https://i.pravatar.cc/150?img=1',
-              ), // Image de placeholder
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: GestureDetector(
+              onTap: () => context.push('/profile'),
+              child: const CircleAvatar(
+                radius: 16,
+                backgroundImage: NetworkImage(
+                  'https://cdn-icons-png.flaticon.com/512/6858/6858504.png',
+                ),
+              ),
             ),
           ),
         ],
-        // Nouvelle barre de recherche
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Padding(
@@ -108,7 +108,7 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
                   ),
                   child: IconButton(
                     onPressed: () {
-                      // Logique pour afficher les filtres
+                      // filtres
                     },
                     icon: const Icon(Icons.filter_list, color: Colors.white),
                   ),
@@ -148,15 +148,20 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
 }
 
 class ProductCard extends ConsumerWidget {
-  const ProductCard({required this.product});
+  const ProductCard({super.key, required this.product});
   final Product product;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final simulatedRating = 3.5 + Random().nextDouble() * 1.5;
+    final favoritesAsync = ref.watch(favoritesControllerProvider);
+    final isFavorite = favoritesAsync.maybeWhen(
+      data: (favorites) => favorites.contains(product.id),
+      orElse: () => false,
+    );
 
     return GestureDetector(
-      onTap: () => context.go('/product/${product.id}'),
+      onTap: () => context.push('/product/${product.id}'),
       child: Card(
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -197,11 +202,16 @@ class ProductCard extends ConsumerWidget {
                   Positioned(
                     top: 8,
                     right: 8,
-                    child: Icon(
-                      Random().nextBool()
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      color: Colors.redAccent,
+                    child: IconButton(
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.redAccent,
+                      ),
+                      onPressed: () {
+                        ref
+                            .read(favoritesControllerProvider.notifier)
+                            .toggleFavorite(product.id);
+                      },
                     ),
                   ),
                 ],
