@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:ecommerce/features/profile/presentation/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -39,6 +40,11 @@ GoRouter createAppRouter() {
         builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) =>
+            const ProfileScreen(), // On ajoute la route vers notre nouvel écran
+      ),
       GoRoute(
         path: '/catalog',
         builder: (context, state) => const CatalogScreen(),
