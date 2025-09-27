@@ -1,5 +1,45 @@
 {
-  "projects": {
-    "default": "stormshop"
-  }
+  "projects": {},
+  "targets": {
+    "stormshop": {
+      "hosting": {
+        "blue": [
+          "shopflutter-aabc1"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "hosting": [
+    {
+      "target": "blue",
+      "public": "build/web",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "green",
+      "public": "build/web",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
 }
