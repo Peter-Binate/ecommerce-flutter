@@ -4,7 +4,8 @@
     "stormshop": {
       "hosting": {
         "blue": [
-          "shopflutter-aabc1"
+          "shopflutter-aabc1",
+          "stormshop-2"
         ]
       }
     }
